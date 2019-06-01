@@ -4,12 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>process-examples</artifactId>
-        <groupId>de.patst</groupId>
+        <groupId>de.patst.process</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>test-coverage</artifactId>
+
+    <properties>
+        <!-- The coverage plugin does not work with 7.11 due to classcastexception for CompositeDbHistoryEventHandler-->
+        <camunda.version>7.10.0</camunda.version>
+        <camunda.spring-boot.version>3.2.0</camunda.spring-boot.version>
+    </properties>
 
 
     <dependencies>
@@ -20,7 +26,7 @@
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-            <version>3.2.0</version>
+            <version>${camunda.spring-boot.version}</version>
         </dependency>
         <!-- Added for groovy script task -->
         <dependency>
@@ -40,18 +46,6 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.camunda.bpm.assert</groupId>
-            <artifactId>camunda-bpm-assert</artifactId>
-            <version>3.0.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.camunda.bpm.extension</groupId>
-            <artifactId>camunda-bpm-assert-scenario</artifactId>
-            <version>0.2</version>
-            <scope>test</scope>
-        </dependency>
         <!-- Used to generate test coverage reports, see https://github.com/camunda/camunda-consulting/tree/master/snippets/camunda-bpm-process-test-coverage -->
         <dependency>
             <groupId>org.camunda.bpm.extension</groupId>

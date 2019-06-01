@@ -1,7 +1,6 @@
 package de.patst.process.testing;
 
 import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.extension.process_test_coverage.junit.rules.TestCoverageProcessEngineRuleBuilder;
@@ -16,8 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.camunda.bpm.engine.test.assertions.ProcessEngineTests.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -46,9 +43,8 @@ public class ProcessCoverageTest {
         // Input must be set, otherwise there will be an exception
         // parameters.put("input", 1);
         parameters.put("input", 0);
-        ProcessInstance processInstance = this.processEngine
+        this.processEngine
                 .getRuntimeService()
                 .startProcessInstanceByMessage("TestProcessCoverageStartMessage", "", parameters);
-        assertThat(processInstance).isEnded();
     }
 }
