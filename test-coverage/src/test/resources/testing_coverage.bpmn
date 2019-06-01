@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1k749q3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.1">
+  <bpmn:process id="TestProcessCoverage" name="Test Process Coverage" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="TestProcessCoverageStartMessage">
+      <bpmn:outgoing>SequenceFlow_0x2jf29</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_04jatho" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1gnjn0h">
+      <bpmn:incoming>SequenceFlow_0ly8f57</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:manualTask id="Task2Id" name="Do Task2">
+      <bpmn:incoming>SequenceFlow_02xwgp2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0mtwv9r</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0dbfznd" name="input&#62;0?" default="SequenceFlow_0ztlggt">
+      <bpmn:incoming>SequenceFlow_0x2jf29</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ztlggt</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_02xwgp2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0x2jf29" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_0dbfznd" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ztlggt" name="default" sourceRef="ExclusiveGateway_0dbfznd" targetRef="Task1Id" />
+    <bpmn:sequenceFlow id="SequenceFlow_02xwgp2" name="input &#62; 0" sourceRef="ExclusiveGateway_0dbfznd" targetRef="Task2Id">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${input &gt; 0 }</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0w7jonw">
+      <bpmn:incoming>SequenceFlow_0nsl8es</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0mtwv9r</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0ly8f57</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0nsl8es" sourceRef="Task1Id" targetRef="ExclusiveGateway_0w7jonw" />
+    <bpmn:sequenceFlow id="SequenceFlow_0mtwv9r" sourceRef="Task2Id" targetRef="ExclusiveGateway_0w7jonw" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ly8f57" sourceRef="ExclusiveGateway_0w7jonw" targetRef="EndEvent_1gnjn0h" />
+    <bpmn:scriptTask id="Task1Id" name="Do Task1" scriptFormat="groovy">
+      <bpmn:incoming>SequenceFlow_0ztlggt</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0nsl8es</bpmn:outgoing>
+      <bpmn:script>println("Hello task 1")</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmn:message id="Message_04jatho" name="TestProcessCoverageStartMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TestProcessCoverage">
+      <bpmndi:BPMNShape id="StartEvent_0inf0q3_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="165" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="208" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1gnjn0h_di" bpmnElement="EndEvent_1gnjn0h">
+        <dc:Bounds x="607" y="165" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ManualTask_1mwmard_di" bpmnElement="Task2Id">
+        <dc:Bounds x="367" y="229" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0dbfznd_di" bpmnElement="ExclusiveGateway_0dbfznd" isMarkerVisible="true">
+        <dc:Bounds x="259" y="158" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="298" y="202" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0x2jf29_di" bpmnElement="SequenceFlow_0x2jf29">
+        <di:waypoint x="215" y="183" />
+        <di:waypoint x="259" y="183" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ztlggt_di" bpmnElement="SequenceFlow_0ztlggt">
+        <di:waypoint x="284" y="158" />
+        <di:waypoint x="284" y="121" />
+        <di:waypoint x="367" y="121" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="288" y="97" width="34" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_02xwgp2_di" bpmnElement="SequenceFlow_02xwgp2">
+        <di:waypoint x="284" y="208" />
+        <di:waypoint x="284" y="269" />
+        <di:waypoint x="367" y="269" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="300" y="277" width="43" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0w7jonw_di" bpmnElement="ExclusiveGateway_0w7jonw" isMarkerVisible="true">
+        <dc:Bounds x="498" y="158" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0nsl8es_di" bpmnElement="SequenceFlow_0nsl8es">
+        <di:waypoint x="467" y="121" />
+        <di:waypoint x="523" y="121" />
+        <di:waypoint x="523" y="158" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0mtwv9r_di" bpmnElement="SequenceFlow_0mtwv9r">
+        <di:waypoint x="467" y="269" />
+        <di:waypoint x="523" y="269" />
+        <di:waypoint x="523" y="208" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ly8f57_di" bpmnElement="SequenceFlow_0ly8f57">
+        <di:waypoint x="548" y="183" />
+        <di:waypoint x="607" y="183" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ScriptTask_0jm6vgn_di" bpmnElement="Task1Id">
+        <dc:Bounds x="367" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
