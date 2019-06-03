@@ -1,0 +1,12 @@
+camunda:
+  bpm:
+    admin-user:
+      id: admin
+      password: admin
+    database:
+      type: mysql
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/camunda
+    username: camunda
+    password: camunda
