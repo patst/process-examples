@@ -15,6 +15,7 @@
         <module>test-coverage</module>
         <module>test-basic</module>
         <module>db-connect</module>
+        <module>rest-api</module>
     </modules>
 
     <groupId>de.patst.process</groupId>
