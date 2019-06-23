@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1k749q3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.1">
+  <bpmn:process id="MultiInstanceListenerProcess" name="Multi Instance Listener process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="MultiInstanceListenerStartMessage">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${logListener}" event="start" />
+        <camunda:executionListener delegateExpression="${logListener}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>firstFlowId</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_04jatho" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${logListener}" event="start" />
+        <camunda:executionListener delegateExpression="${logListener}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>afterLogDelegateFlow</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="LogVariablesTask" name="Log variables with expression" camunda:delegateExpression="${logDelegate}">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${logListener}" event="start" />
+        <camunda:executionListener delegateExpression="${logListener}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>firstFlowId</bpmn:incoming>
+      <bpmn:outgoing>afterLogDelegateFlow</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="names" camunda:elementVariable="name" />
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="firstFlowId" sourceRef="StartEvent_1" targetRef="LogVariablesTask">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${logListener}" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="afterLogDelegateFlow" sourceRef="LogVariablesTask" targetRef="EndEvent" />
+  </bpmn:process>
+  <bpmn:message id="Message_04jatho" name="MultiInstanceListenerStartMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MultiInstanceListenerProcess">
+      <bpmndi:BPMNShape id="StartEvent_0inf0q3_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="189" y="103" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="171" y="146" width="81" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1gnjn0h_di" bpmnElement="EndEvent">
+        <dc:Bounds x="590" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1k9se9o_di" bpmnElement="LogVariablesTask">
+        <dc:Bounds x="360" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0b8146s_di" bpmnElement="firstFlowId">
+        <di:waypoint x="225" y="121" />
+        <di:waypoint x="360" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_088g7d9_di" bpmnElement="afterLogDelegateFlow">
+        <di:waypoint x="460" y="121" />
+        <di:waypoint x="590" y="121" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
