@@ -17,6 +17,7 @@
         <module>db-connect</module>
         <module>rest-api</module>
         <module>delegates</module>
+        <module>engine-services</module>
     </modules>
 
     <groupId>de.patst.process</groupId>

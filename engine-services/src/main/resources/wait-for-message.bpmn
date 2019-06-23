@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1k749q3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.1">
+  <bpmn:process id="WaitForMessageProcess" name="Wait for message process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="WaitForMessageStartMessage">
+      <bpmn:outgoing>SequenceFlow_02u7p5k</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_04jatho" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1gnjn0h">
+      <bpmn:incoming>SequenceFlow_1gkh1pv</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="LogVariablesTask" name="Log variables with expression" camunda:delegateExpression="${logDelegate}">
+      <bpmn:incoming>SequenceFlow_0125k4k</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1gkh1pv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1gkh1pv" sourceRef="LogVariablesTask" targetRef="EndEvent_1gnjn0h" />
+    <bpmn:sequenceFlow id="SequenceFlow_02u7p5k" sourceRef="StartEvent_1" targetRef="MessageReceivedMessage" />
+    <bpmn:intermediateCatchEvent id="MessageReceivedMessage" name="Message received">
+      <bpmn:incoming>SequenceFlow_02u7p5k</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0125k4k</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1bcrprg" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0125k4k" sourceRef="MessageReceivedMessage" targetRef="LogVariablesTask" />
+  </bpmn:process>
+  <bpmn:message id="Message_04jatho" name="WaitForMessageStartMessage" />
+  <bpmn:message id="Message_1bcrprg" name="MessageReceivedMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="WaitForMessageProcess">
+      <bpmndi:BPMNShape id="StartEvent_0inf0q3_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="103" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="156" y="146" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1gnjn0h_di" bpmnElement="EndEvent_1gnjn0h">
+        <dc:Bounds x="524" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1k9se9o_di" bpmnElement="LogVariablesTask">
+        <dc:Bounds x="380" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gkh1pv_di" bpmnElement="SequenceFlow_1gkh1pv">
+        <di:waypoint x="480" y="121" />
+        <di:waypoint x="524" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_02u7p5k_di" bpmnElement="SequenceFlow_02u7p5k">
+        <di:waypoint x="215" y="121" />
+        <di:waypoint x="278" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_02v3qap_di" bpmnElement="MessageReceivedMessage">
+        <dc:Bounds x="278" y="103" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="251" y="146" width="90" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0125k4k_di" bpmnElement="SequenceFlow_0125k4k">
+        <di:waypoint x="314" y="121" />
+        <di:waypoint x="380" y="121" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
