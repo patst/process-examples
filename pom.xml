@@ -19,6 +19,7 @@
         <module>delegates</module>
         <module>engine-services</module>
         <module>listener</module>
+        <module>transactions</module>
     </modules>
 
     <groupId>de.patst.process</groupId>

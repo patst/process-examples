@@ -1,0 +1,7 @@
+camunda:
+  bpm:
+    admin-user:
+      id: admin
+      password: admin
+    job-execution:
+      enabled: true

@@ -84,6 +84,9 @@
         <di:waypoint x="326" y="189" />
         <di:waypoint x="326" y="121" />
         <di:waypoint x="393" y="121" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="326" y="152" width="30" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_1r0bvo8_di" bpmnElement="ExclusiveGateway_1r0bvo8" isMarkerVisible="true">
         <dc:Bounds x="509" y="189" width="50" height="50" />
