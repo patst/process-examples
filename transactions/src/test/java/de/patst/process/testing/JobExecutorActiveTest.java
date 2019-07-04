@@ -2,7 +2,6 @@ package de.patst.process.testing;
 
 import org.apache.ibatis.logging.LogFactory;
 import org.camunda.bpm.engine.HistoryService;
-import org.camunda.bpm.engine.ManagementService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.junit.Test;
@@ -29,8 +28,6 @@ public class JobExecutorActiveTest {
 
     @Autowired
     private RuntimeService runtimeService;
-    @Autowired
-    private ManagementService managementService;
 
     @Autowired
     private HistoryService historyService;

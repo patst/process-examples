@@ -11,6 +11,10 @@
 
     <artifactId>transactions</artifactId>
 
+    <properties>
+        <!--<camunda.version>7.11.0-ee</camunda.version>-->
+    </properties>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -32,6 +36,7 @@
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+            <!--<artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId>-->
             <version>${camunda.spring-boot.version}</version>
         </dependency>
 
