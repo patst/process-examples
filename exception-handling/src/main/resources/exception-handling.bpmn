@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1k749q3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.4">
+  <bpmn:message id="Message_04jatho" name="ExceptionHandling1StartMessage" />
+  <bpmn:collaboration id="Collaboration_14uenjn">
+    <bpmn:participant id="Participant_1777cuj" name="ExceptionHandling example 1" processRef="ExceptionHandling1" />
+    <bpmn:participant id="Participant_1xj1f3u" name="ExceptionHandling example 3" processRef="ExceptionHandling3" />
+    <bpmn:participant id="Participant_1ma1u0z" name="ExceptionHandling example 2" processRef="ExceptionHandlingExample2" />
+    <bpmn:textAnnotation id="TextAnnotation_0i7djjq">
+      <bpmn:text>Service Exception is caught and exception information handled with a process variable </bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1vsnigg" sourceRef="Participant_1777cuj" targetRef="TextAnnotation_0i7djjq" />
+  </bpmn:collaboration>
+  <bpmn:process id="ExceptionHandling1" name="ExceptionHandling1" isExecutable="true">
+    <bpmn:serviceTask id="CaughtExceptionTask" name="Do something  with caught exception" camunda:delegateExpression="${caughtExceptionDelegate}">
+      <bpmn:incoming>SequenceFlow_0oqxgo8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1i4h0rt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1ujmud8" name="serviceSuccessful?">
+      <bpmn:incoming>SequenceFlow_1i4h0rt</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0u43xgu</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1ox1lu9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_1gnjn0h">
+      <bpmn:incoming>SequenceFlow_0nx8q3q</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0reo9xm">
+      <bpmn:incoming>SequenceFlow_1g9g6qr</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0cbkthf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0nx8q3q</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0oqxgo8" sourceRef="StartEvent_1" targetRef="CaughtExceptionTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_1i4h0rt" sourceRef="CaughtExceptionTask" targetRef="ExclusiveGateway_1ujmud8" />
+    <bpmn:sequenceFlow id="SequenceFlow_0u43xgu" name="yes" sourceRef="ExclusiveGateway_1ujmud8" targetRef="DoSomethingElseTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${delegateException == null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1g9g6qr" sourceRef="DoSomethingElseTask" targetRef="ExclusiveGateway_0reo9xm" />
+    <bpmn:sequenceFlow id="SequenceFlow_1ox1lu9" name="no" sourceRef="ExclusiveGateway_1ujmud8" targetRef="HandleExceptionTask">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${delegateException != null}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0cbkthf" sourceRef="HandleExceptionTask" targetRef="ExclusiveGateway_0reo9xm" />
+    <bpmn:sequenceFlow id="SequenceFlow_0nx8q3q" sourceRef="ExclusiveGateway_0reo9xm" targetRef="EndEvent_1gnjn0h" />
+    <bpmn:startEvent id="StartEvent_1" name="ExceptionHandling1StartMessage">
+      <bpmn:outgoing>SequenceFlow_0oqxgo8</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_04jatho" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="DoSomethingElseTask" name="Do something else" camunda:delegateExpression="${logDelegate}">
+      <bpmn:incoming>SequenceFlow_0u43xgu</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1g9g6qr</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="HandleExceptionTask" name="Handle Exception" camunda:delegateExpression="${logDelegate}">
+      <bpmn:incoming>SequenceFlow_1ox1lu9</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0cbkthf</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:process id="ExceptionHandling3" name="ExceptionHandling3" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_18kygxt" name="ExceptionHandling3StartMessage">
+      <bpmn:outgoing>SequenceFlow_0i4nmox</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0ik56fo" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="ExceptionTask" name="Do something with exception" camunda:delegateExpression="${errorDelegate}">
+      <bpmn:incoming>SequenceFlow_0i4nmox</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0bcto9c</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:manualTask id="HandleBPMNErrorTask" name="Handle BPMN Error">
+      <bpmn:incoming>SequenceFlow_13gddzd</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jp3asc</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:endEvent id="EndEvent_05cw6j5">
+      <bpmn:incoming>SequenceFlow_1tk48oi</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Task_1ea86s5" name="Do something else" camunda:delegateExpression="${logDelegate}">
+      <bpmn:incoming>SequenceFlow_0bcto9c</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1tk48oi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="ErrorBoundaryEvent" name="ServiceError" attachedToRef="ExceptionTask">
+      <bpmn:outgoing>SequenceFlow_13gddzd</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="Error_0i60lwn" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0i4nmox" sourceRef="StartEvent_18kygxt" targetRef="ExceptionTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_13gddzd" sourceRef="ErrorBoundaryEvent" targetRef="HandleBPMNErrorTask" />
+    <bpmn:sequenceFlow id="SequenceFlow_1jp3asc" sourceRef="HandleBPMNErrorTask" targetRef="ErrorEndEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_0bcto9c" sourceRef="ExceptionTask" targetRef="Task_1ea86s5" />
+    <bpmn:sequenceFlow id="SequenceFlow_1tk48oi" sourceRef="Task_1ea86s5" targetRef="EndEvent_05cw6j5" />
+    <bpmn:endEvent id="ErrorEndEvent" name="ErrorEndEvent">
+      <bpmn:incoming>SequenceFlow_1jp3asc</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_0ik56fo" name="ExceptionHandling3StartMessage" />
+  <bpmn:error id="Error_0i60lwn" name="ServiceError" errorCode="0815" />
+  <bpmn:process id="ExceptionHandlingExample2" name="ExceptionHandling example 2" isExecutable="true">
+    <bpmn:sequenceFlow id="SequenceFlow_0lbbbzi" name="no" sourceRef="ExclusiveGateway_10v3y45" targetRef="ExclusiveGateway_0ezpy7e">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${loanAmount &lt;= 100000}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_13qp5rs" name="yes" sourceRef="ExclusiveGateway_10v3y45" targetRef="ServiceErrorEndEvent">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${loanAmount &gt; 100000}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_19n9n1v" sourceRef="CalculateLoanTask" targetRef="ExclusiveGateway_10v3y45" />
+    <bpmn:sequenceFlow id="SequenceFlow_1d1ujdg" sourceRef="StartEvent_11bq3y1" targetRef="CalculateLoanTask" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0ezpy7e">
+      <bpmn:incoming>SequenceFlow_0lbbbzi</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0n0o2d0</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_10v3y45" name="loanAmount &#62; 100.000€?">
+      <bpmn:incoming>SequenceFlow_19n9n1v</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_13qp5rs</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0lbbbzi</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_1c37kzp">
+      <bpmn:incoming>SequenceFlow_0n0o2d0</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0n0o2d0" sourceRef="ExclusiveGateway_0ezpy7e" targetRef="EndEvent_1c37kzp" />
+    <bpmn:endEvent id="ServiceErrorEndEvent" name="ServiceError end event">
+      <bpmn:incoming>SequenceFlow_13qp5rs</bpmn:incoming>
+      <bpmn:errorEventDefinition errorRef="Error_0i60lwn" />
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_11bq3y1" name="ExceptionHandling2StartMessage">
+      <bpmn:outgoing>SequenceFlow_1d1ujdg</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0slpslm" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="CalculateLoanTask" name="Calculate credit loan" camunda:expression="${execution.setVariable(&#39;loanAmount&#39;, 120000)}">
+      <bpmn:incoming>SequenceFlow_1d1ujdg</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_19n9n1v</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:message id="Message_0slpslm" name="ExceptionHandling2StartMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_14uenjn">
+      <bpmndi:BPMNShape id="Participant_1777cuj_di" bpmnElement="Participant_1777cuj">
+        <dc:Bounds x="145" y="48.5" width="618" height="301" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0inf0q3_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="209" y="173" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="188" y="216" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1k9se9o_di" bpmnElement="CaughtExceptionTask">
+        <dc:Bounds x="283" y="151" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1ujmud8_di" bpmnElement="ExclusiveGateway_1ujmud8" isMarkerVisible="true">
+        <dc:Bounds x="411" y="166" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="471" y="177" width="86" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1gnjn0h_di" bpmnElement="EndEvent_1gnjn0h">
+        <dc:Bounds x="707" y="173" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0reo9xm_di" bpmnElement="ExclusiveGateway_0reo9xm" isMarkerVisible="true">
+        <dc:Bounds x="625" y="166" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0oqxgo8_di" bpmnElement="SequenceFlow_0oqxgo8">
+        <di:waypoint x="245" y="191" />
+        <di:waypoint x="283" y="191" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1i4h0rt_di" bpmnElement="SequenceFlow_1i4h0rt">
+        <di:waypoint x="383" y="191" />
+        <di:waypoint x="411" y="191" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0u43xgu_di" bpmnElement="SequenceFlow_0u43xgu">
+        <di:waypoint x="436" y="166" />
+        <di:waypoint x="436" y="109" />
+        <di:waypoint x="506" y="109" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="443" y="135" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1g9g6qr_di" bpmnElement="SequenceFlow_1g9g6qr">
+        <di:waypoint x="606" y="109" />
+        <di:waypoint x="650" y="109" />
+        <di:waypoint x="650" y="166" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ox1lu9_di" bpmnElement="SequenceFlow_1ox1lu9">
+        <di:waypoint x="436" y="216" />
+        <di:waypoint x="436" y="290" />
+        <di:waypoint x="506" y="290" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="445" y="250" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0cbkthf_di" bpmnElement="SequenceFlow_0cbkthf">
+        <di:waypoint x="606" y="290" />
+        <di:waypoint x="650" y="290" />
+        <di:waypoint x="650" y="216" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0nx8q3q_di" bpmnElement="SequenceFlow_0nx8q3q">
+        <di:waypoint x="675" y="191" />
+        <di:waypoint x="707" y="191" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Participant_1xj1f3u_di" bpmnElement="Participant_1xj1f3u">
+        <dc:Bounds x="145" y="603" width="618" height="380" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0owlsob_di" bpmnElement="StartEvent_18kygxt">
+        <dc:Bounds x="222" y="754" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="198" y="797" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0i4nmox_di" bpmnElement="SequenceFlow_0i4nmox">
+        <di:waypoint x="258" y="772" />
+        <di:waypoint x="294" y="772" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0tjnugx_di" bpmnElement="ExceptionTask">
+        <dc:Bounds x="294" y="732" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_05cw6j5_di" bpmnElement="EndEvent_05cw6j5">
+        <dc:Bounds x="597" y="754" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_13gddzd_di" bpmnElement="SequenceFlow_13gddzd">
+        <di:waypoint x="359" y="830" />
+        <di:waypoint x="359" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ManualTask_1ah9fj9_di" bpmnElement="HandleBPMNErrorTask">
+        <dc:Bounds x="309" y="870" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jp3asc_di" bpmnElement="SequenceFlow_1jp3asc">
+        <di:waypoint x="409" y="910" />
+        <di:waypoint x="482" y="910" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0bcto9c_di" bpmnElement="SequenceFlow_0bcto9c">
+        <di:waypoint x="394" y="772" />
+        <di:waypoint x="450" y="772" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1ri8a9j_di" bpmnElement="Task_1ea86s5">
+        <dc:Bounds x="450" y="732" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1tk48oi_di" bpmnElement="SequenceFlow_1tk48oi">
+        <di:waypoint x="550" y="772" />
+        <di:waypoint x="597" y="772" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1bq0c3t_di" bpmnElement="DoSomethingElseTask">
+        <dc:Bounds x="506" y="69" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0qlu500_di" bpmnElement="HandleExceptionTask">
+        <dc:Bounds x="506" y="250" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_1nbfq12_di" bpmnElement="ErrorBoundaryEvent">
+        <dc:Bounds x="341" y="794" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="372" y="831" width="63" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1ma1u0z_di" bpmnElement="Participant_1ma1u0z">
+        <dc:Bounds x="145" y="351" width="619" height="251" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0h1odo3_di" bpmnElement="StartEvent_11bq3y1">
+        <dc:Bounds x="206" y="458" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="181" y="501" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1d1ujdg_di" bpmnElement="SequenceFlow_1d1ujdg">
+        <di:waypoint x="242" y="476" />
+        <di:waypoint x="281" y="476" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_10v3y45_di" bpmnElement="ExclusiveGateway_10v3y45" isMarkerVisible="true">
+        <dc:Bounds x="401" y="451" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="393" y="508" width="69" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_19n9n1v_di" bpmnElement="SequenceFlow_19n9n1v">
+        <di:waypoint x="381" y="476" />
+        <di:waypoint x="401" y="476" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_13qp5rs_di" bpmnElement="SequenceFlow_13qp5rs">
+        <di:waypoint x="426" y="451" />
+        <di:waypoint x="426" y="405" />
+        <di:waypoint x="479" y="405" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="433" y="425" width="17" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0ezpy7e_di" bpmnElement="ExclusiveGateway_0ezpy7e" isMarkerVisible="true">
+        <dc:Bounds x="557" y="451" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lbbbzi_di" bpmnElement="SequenceFlow_0lbbbzi">
+        <di:waypoint x="451" y="476" />
+        <di:waypoint x="557" y="476" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="498" y="458" width="13" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1c37kzp_di" bpmnElement="EndEvent_1c37kzp">
+        <dc:Bounds x="647" y="458" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0n0o2d0_di" bpmnElement="SequenceFlow_0n0o2d0">
+        <di:waypoint x="607" y="476" />
+        <di:waypoint x="647" y="476" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1tbmvxx_di" bpmnElement="ServiceErrorEndEvent">
+        <dc:Bounds x="479" y="387" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="456" y="430" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0i7djjq_di" bpmnElement="TextAnnotation_0i7djjq">
+        <dc:Bounds x="779" y="112" width="100" height="124" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1vsnigg_di" bpmnElement="Association_1vsnigg">
+        <di:waypoint x="763" y="179" />
+        <di:waypoint x="779" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1fzn83o_di" bpmnElement="CalculateLoanTask">
+        <dc:Bounds x="281" y="436" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_00wm0p8_di" bpmnElement="ErrorEndEvent">
+        <dc:Bounds x="482" y="892" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="464" y="935" width="74" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
