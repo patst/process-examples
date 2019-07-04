@@ -1,0 +1,8 @@
+camunda:
+  bpm:
+    admin-user:
+      id: admin
+      password: admin
+    job-execution:
+      enabled: true
+    #default-number-of-retries: 1 # default is 3

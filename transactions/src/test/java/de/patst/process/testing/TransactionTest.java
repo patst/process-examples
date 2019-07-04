@@ -1,8 +1,8 @@
 package de.patst.process.testing;
 
-import de.patst.process.TransactionWatcher;
 import org.apache.ibatis.logging.LogFactory;
 import org.camunda.bpm.engine.HistoryService;
+import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -31,34 +31,21 @@ public class TransactionTest {
     @Autowired
     private HistoryService historyService;
 
-    // Transaction example 1 has no asnyc after/ before configured
+    // Transaction example 1 has no async after/ before configured.
+    // This means the process instance 'vanishes' in case of an exception,
+    // because the database transaction is rolled back.
     @Test
     public void testTransactionExample1() {
-        TransactionWatcher.reset();
-        ProcessInstance processInstance = runtimeService
-                .startProcessInstanceByMessage
-                        ("Transaction1StartMessage");
-        assertTrue(processInstance.isEnded());
-
-        LOGGER.info("Successful transactions: " + TransactionWatcher.getSuccessfulTransactions());
-    }
-
-    // Async before configured at service task
-    // camunda.bpm.job-execution.enabled must be set
-    @Test
-    public synchronized void testTransactionExample2() throws Exception {
-        TransactionWatcher.reset();
-        ProcessInstance processInstance = this.runtimeService.startProcessInstanceByKey("TransactionExample2");
-        while (this.historyService
-                .createHistoricProcessInstanceQuery()
-                .processInstanceId(processInstance.getId())
-                .completed()
-                .list().size() == 0) {
-            // Wait for completion
-            LOGGER.info("Waiting for Process instance completion");
-            Thread.sleep(1000);
+        ProcessInstance processInstance = null;
+        try {
+            processInstance = runtimeService
+                    .startProcessInstanceByMessage
+                            ("Transaction1StartMessage");
+        } catch (ProcessEngineException pee) {
+            LOGGER.error("ProcessEngineException thrown", pee);
         }
+        assertNull(processInstance);
 
-        LOGGER.info("Successful transactions: " + TransactionWatcher.getSuccessfulTransactions());
     }
+
 }

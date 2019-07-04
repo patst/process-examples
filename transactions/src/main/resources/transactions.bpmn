@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1k749q3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1k749q3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.4">
   <bpmn:message id="Message_04jatho" name="Transaction1StartMessage" />
   <bpmn:collaboration id="Collaboration_02ww3p6">
-    <bpmn:participant id="Participant_0jf61o9" name="Transaction example 1" processRef="ListenerProcess" />
+    <bpmn:participant id="Participant_0jf61o9" name="Transaction example 1" processRef="TransactionExample1" />
     <bpmn:participant id="Participant_0t7jkjl" name="Transaction example 2" processRef="TransactionExample2" />
     <bpmn:textAnnotation id="TextAnnotation_0ki7vhx">
       <bpmn:text>No "async before/after" configured</bpmn:text>
@@ -13,39 +13,24 @@
     </bpmn:textAnnotation>
     <bpmn:association id="Association_1owloop" sourceRef="Participant_0t7jkjl" targetRef="TextAnnotation_15t51ru" />
   </bpmn:collaboration>
-  <bpmn:process id="ListenerProcess" name="Listener process" isExecutable="true">
+  <bpmn:process id="TransactionExample1" name="Transaction example 1" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Transaction1StartMessage">
-      <bpmn:extensionElements>
-        <camunda:executionListener delegateExpression="${logListener}" event="start" />
-        <camunda:executionListener delegateExpression="${logListener}" event="end" />
-      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0s6zu49</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_04jatho" />
     </bpmn:startEvent>
-    <bpmn:serviceTask id="LogVariablesTask" name="Log variables with expression" camunda:delegateExpression="${logDelegate}">
-      <bpmn:extensionElements>
-        <camunda:executionListener delegateExpression="${logListener}" event="start" />
-        <camunda:executionListener delegateExpression="${logListener}" event="end" />
-      </bpmn:extensionElements>
+    <bpmn:serviceTask id="LogVariablesTask" name="Throw Exception" camunda:delegateExpression="${exceptionDelegate}">
       <bpmn:incoming>SequenceFlow_0s6zu49</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1nu9n1w</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="EndEvent">
-      <bpmn:extensionElements>
-        <camunda:executionListener delegateExpression="${logListener}" event="start" />
-        <camunda:executionListener delegateExpression="${logListener}" event="end" />
-      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1nu9n1w</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0s6zu49" sourceRef="StartEvent_1" targetRef="LogVariablesTask" />
     <bpmn:sequenceFlow id="SequenceFlow_1nu9n1w" sourceRef="LogVariablesTask" targetRef="EndEvent" />
   </bpmn:process>
   <bpmn:process id="TransactionExample2" name="Transaction example 2" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_16z630o" name="Transaction2">
-      <bpmn:outgoing>SequenceFlow_1uesvj4</bpmn:outgoing>
-    </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1uesvj4" sourceRef="StartEvent_16z630o" targetRef="Task_13b3bjh" />
-    <bpmn:serviceTask id="Task_13b3bjh" name="Log variables with expression" camunda:asyncBefore="true" camunda:delegateExpression="${logDelegate}">
+    <bpmn:serviceTask id="Task_13b3bjh" name="Throw Exception" camunda:asyncBefore="true" camunda:delegateExpression="${exceptionDelegate}">
       <bpmn:incoming>SequenceFlow_1uesvj4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0s374wj</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -53,7 +38,12 @@
       <bpmn:incoming>SequenceFlow_0s374wj</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0s374wj" sourceRef="Task_13b3bjh" targetRef="EndEvent_1bw2fj9" />
+    <bpmn:startEvent id="StartEvent_16z630o" name="Transaction2StartMessage">
+      <bpmn:outgoing>SequenceFlow_1uesvj4</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1aav1x4" />
+    </bpmn:startEvent>
   </bpmn:process>
+  <bpmn:message id="Message_1aav1x4" name="Transaction2StartMessage" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_02ww3p6">
       <bpmndi:BPMNShape id="Participant_0jf61o9_di" bpmnElement="Participant_0jf61o9" isHorizontal="true">
@@ -62,7 +52,7 @@
       <bpmndi:BPMNShape id="StartEvent_0inf0q3_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="254" y="184" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="231" y="230" width="81" height="27" />
+          <dc:Bounds x="230" y="230" width="84" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_1gnjn0h_di" bpmnElement="EndEvent">
@@ -89,12 +79,6 @@
       <bpmndi:BPMNShape id="Participant_0t7jkjl_di" bpmnElement="Participant_0t7jkjl" isHorizontal="true">
         <dc:Bounds x="166" y="335" width="600" height="250" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="StartEvent_16z630o_di" bpmnElement="StartEvent_16z630o">
-        <dc:Bounds x="244" y="438" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="231" y="481" width="64" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1uesvj4_di" bpmnElement="SequenceFlow_1uesvj4">
         <di:waypoint x="280" y="456" />
         <di:waypoint x="375" y="456" />
@@ -116,6 +100,12 @@
         <di:waypoint x="766" y="464" />
         <di:waypoint x="794" y="464" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_1cxz9cc_di" bpmnElement="StartEvent_16z630o">
+        <dc:Bounds x="244" y="438" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="223" y="481" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
