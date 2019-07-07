@@ -14,6 +14,7 @@ public class LogDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution execution) {
         LOGGER.info("--- Start Logging in LogDelegate bean:---");
+        LOGGER.info("Activity Name: " + execution.getCurrentActivityName());
         LOGGER.info("Process Variables:");
         execution.getVariables()
                 .forEach((key, value) -> LOGGER.info("Variable Name: " + key + "; value=" + value));

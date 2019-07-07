@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0fukrq4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.4">
+  <bpmn:process id="CompensationSubprocessExample" name="Compensation Subprocess Example" isExecutable="true">
+    <bpmn:sequenceFlow id="SequenceFlow_0qts2u5" sourceRef="StartEvent_1" targetRef="ExclusiveGateway_1nehd89" />
+    <bpmn:parallelGateway id="ExclusiveGateway_1nehd89">
+      <bpmn:incoming>SequenceFlow_0qts2u5</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1wirv2e</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1m7q1xt</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:subProcess id="OrderCarSubprocess" name="OrderCarSubprocess">
+      <bpmn:incoming>SequenceFlow_1wirv2e</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0meq7b3</bpmn:outgoing>
+      <bpmn:startEvent id="StartSubprocessEvent">
+        <bpmn:outgoing>SequenceFlow_0wxliwv</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_0wxliwv" sourceRef="StartSubprocessEvent" targetRef="OrderCarTask" />
+      <bpmn:serviceTask id="OrderCarTask" name="Order car" camunda:delegateExpression="${logDelegate}">
+        <bpmn:incoming>SequenceFlow_0wxliwv</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0j8x61w</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="SequenceFlow_0j8x61w" sourceRef="OrderCarTask" targetRef="CommunicateDeliveryDateHumanTask" />
+      <bpmn:userTask id="CommunicateDeliveryDateHumanTask" name="Communicate delivery date" camunda:assignee="admin">
+        <bpmn:incoming>SequenceFlow_0j8x61w</bpmn:incoming>
+        <bpmn:outgoing>SequenceFlow_0n8gwct</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:endEvent id="DeliveryDateCommunicatedEndEvent" name="DeliveryDateCommunicatedEndEvent&#10;">
+        <bpmn:incoming>SequenceFlow_0n8gwct</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="SequenceFlow_0n8gwct" sourceRef="CommunicateDeliveryDateHumanTask" targetRef="DeliveryDateCommunicatedEndEvent" />
+      <bpmn:boundaryEvent id="CarOrderCompensationEvent" name="Cancel order" attachedToRef="OrderCarTask">
+        <bpmn:compensateEventDefinition />
+      </bpmn:boundaryEvent>
+      <bpmn:serviceTask id="CancelCarOrderTask" name="Cancel car order" isForCompensation="true" camunda:delegateExpression="${logDelegate}" />
+      <bpmn:association id="Association_0xh7zn3" associationDirection="One" sourceRef="CarOrderCompensationEvent" targetRef="CancelCarOrderTask" />
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="SequenceFlow_1wirv2e" sourceRef="ExclusiveGateway_1nehd89" targetRef="OrderCarSubprocess" />
+    <bpmn:sequenceFlow id="SequenceFlow_1m7q1xt" sourceRef="ExclusiveGateway_1nehd89" targetRef="IntermediateThrowEvent_0w5zqm4" />
+    <bpmn:serviceTask id="ChargeCustomerTask" name="Charge customer bank account" camunda:delegateExpression="${errorDelegate}">
+      <bpmn:incoming>SequenceFlow_08vk3us</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0r9l120</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="BoundaryEvent_1uribq9" attachedToRef="ChargeCustomerTask">
+      <bpmn:outgoing>SequenceFlow_1f2ml5w</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="Error_05kcbsy" camunda:errorCodeVariable="errorCode" camunda:errorMessageVariable="errorMessage" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1f2ml5w" sourceRef="BoundaryEvent_1uribq9" targetRef="CancelOrderThrowEvent" />
+    <bpmn:intermediateThrowEvent id="CancelOrderThrowEvent" name="Cancel order">
+      <bpmn:incoming>SequenceFlow_1f2ml5w</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0vu0dy5</bpmn:outgoing>
+      <bpmn:compensateEventDefinition activityRef="OrderCarSubprocess" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="OrderCancelledEndEvent" name="OrderCancelled">
+      <bpmn:incoming>SequenceFlow_0vu0dy5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0vu0dy5" sourceRef="CancelOrderThrowEvent" targetRef="OrderCancelledEndEvent" />
+    <bpmn:startEvent id="StartEvent_1" name="CompensationSubprocessExampleStartMessage" camunda:asyncBefore="true">
+      <bpmn:outgoing>SequenceFlow_0qts2u5</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0s6jwfh" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="OrderSuccesfulEndEvent" name="Order succesful">
+      <bpmn:incoming>SequenceFlow_0r9l120</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_08vk3us" sourceRef="IntermediateThrowEvent_0w5zqm4" targetRef="ChargeCustomerTask" />
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0w5zqm4" name="Wait 5 seconds">
+      <bpmn:incoming>SequenceFlow_1m7q1xt</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_08vk3us</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0r9l120" sourceRef="ChargeCustomerTask" targetRef="OrderSuccesfulEndEvent" />
+    <bpmn:endEvent id="EndEvent_1aq1d2l" name="Car ordering finished">
+      <bpmn:incoming>SequenceFlow_0meq7b3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0meq7b3" sourceRef="OrderCarSubprocess" targetRef="EndEvent_1aq1d2l" />
+    <bpmn:textAnnotation id="TextAnnotation_06tsc7w">
+      <bpmn:text>Compensation is only triggered of the subproces is finished. Otherwise the "Cancel order" compensation event is not active</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0i0tuz6" sourceRef="CancelOrderThrowEvent" targetRef="TextAnnotation_06tsc7w" />
+  </bpmn:process>
+  <bpmn:message id="Message_0s6jwfh" name="CompensationSubprocessExampleStartMessage" />
+  <bpmn:error id="Error_05kcbsy" name="SomeProcessError" errorCode="0815" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CompensationSubprocessExample">
+      <bpmndi:BPMNEdge id="SequenceFlow_0qts2u5_di" bpmnElement="SequenceFlow_0qts2u5">
+        <di:waypoint x="159" y="321" />
+        <di:waypoint x="193" y="321" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ParallelGateway_18ysjdm_di" bpmnElement="ExclusiveGateway_1nehd89">
+        <dc:Bounds x="193" y="296" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_1ax0p5y_di" bpmnElement="OrderCarSubprocess" isExpanded="true">
+        <dc:Bounds x="286" y="61" width="538" height="287" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_08jefec_di" bpmnElement="StartSubprocessEvent">
+        <dc:Bounds x="317" y="157" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0wxliwv_di" bpmnElement="SequenceFlow_0wxliwv">
+        <di:waypoint x="353" y="175" />
+        <di:waypoint x="410" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1hdwqmp_di" bpmnElement="OrderCarTask">
+        <dc:Bounds x="410" y="135" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0j8x61w_di" bpmnElement="SequenceFlow_0j8x61w">
+        <di:waypoint x="510" y="175" />
+        <di:waypoint x="577" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_0uytz3l_di" bpmnElement="CommunicateDeliveryDateHumanTask">
+        <dc:Bounds x="577" y="135" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0c1xn2r_di" bpmnElement="DeliveryDateCommunicatedEndEvent">
+        <dc:Bounds x="741" y="157" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="716" y="200" width="87" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0n8gwct_di" bpmnElement="SequenceFlow_0n8gwct">
+        <di:waypoint x="677" y="175" />
+        <di:waypoint x="741" y="175" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_1k356wb_di" bpmnElement="CarOrderCompensationEvent">
+        <dc:Bounds x="442" y="197" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="484" y="218" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0xh7zn3_di" bpmnElement="Association_0xh7zn3">
+        <di:waypoint x="460" y="233" />
+        <di:waypoint x="460" y="288" />
+        <di:waypoint x="577" y="288" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1paqngq_di" bpmnElement="CancelCarOrderTask">
+        <dc:Bounds x="577" y="248" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1wirv2e_di" bpmnElement="SequenceFlow_1wirv2e">
+        <di:waypoint x="218" y="296" />
+        <di:waypoint x="218" y="205" />
+        <di:waypoint x="286" y="205" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1m7q1xt_di" bpmnElement="SequenceFlow_1m7q1xt">
+        <di:waypoint x="218" y="346" />
+        <di:waypoint x="218" y="438" />
+        <di:waypoint x="302" y="438" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0i82qsk_di" bpmnElement="ChargeCustomerTask">
+        <dc:Bounds x="406" y="398" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_1v2jt2t_di" bpmnElement="BoundaryEvent_1uribq9">
+        <dc:Bounds x="453" y="460" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1f2ml5w_di" bpmnElement="SequenceFlow_1f2ml5w">
+        <di:waypoint x="471" y="496" />
+        <di:waypoint x="471" y="563" />
+        <di:waypoint x="517" y="563" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0g5lc7g_di" bpmnElement="CancelOrderThrowEvent">
+        <dc:Bounds x="517" y="545" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="503" y="588" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1ke7an3_di" bpmnElement="OrderCancelledEndEvent">
+        <dc:Bounds x="596" y="545" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="576" y="588" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0vu0dy5_di" bpmnElement="SequenceFlow_0vu0dy5">
+        <di:waypoint x="553" y="563" />
+        <di:waypoint x="596" y="563" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_0f8x09c_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="123" y="303" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="98" y="346" width="88" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0v04kls_di" bpmnElement="OrderSuccesfulEndEvent">
+        <dc:Bounds x="605" y="420" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="584" y="463" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_06tsc7w_di" bpmnElement="TextAnnotation_06tsc7w">
+        <dc:Bounds x="712" y="485" width="100" height="156" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0i0tuz6_di" bpmnElement="Association_0i0tuz6">
+        <di:waypoint x="549" y="551" />
+        <di:waypoint x="608" y="502" />
+        <di:waypoint x="712" y="543" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_08vk3us_di" bpmnElement="SequenceFlow_08vk3us">
+        <di:waypoint x="338" y="438" />
+        <di:waypoint x="406" y="438" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_0dl9q7i_di" bpmnElement="IntermediateThrowEvent_0w5zqm4">
+        <dc:Bounds x="302" y="420" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="283" y="463" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0r9l120_di" bpmnElement="SequenceFlow_0r9l120">
+        <di:waypoint x="506" y="438" />
+        <di:waypoint x="605" y="438" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1aq1d2l_di" bpmnElement="EndEvent_1aq1d2l">
+        <dc:Bounds x="879" y="187" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="867" y="230" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0meq7b3_di" bpmnElement="SequenceFlow_0meq7b3">
+        <di:waypoint x="824" y="205" />
+        <di:waypoint x="879" y="205" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

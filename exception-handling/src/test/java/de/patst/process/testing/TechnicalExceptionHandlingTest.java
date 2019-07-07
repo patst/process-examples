@@ -13,7 +13,7 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertT
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ExceptionHandlingTest {
+public class TechnicalExceptionHandlingTest {
 
     @Autowired
     private HistoryService historyService;
@@ -38,7 +38,8 @@ public class ExceptionHandlingTest {
     }
 
     /**
-     * Example 2 throws a Service Error end event if the loan amount is bigger than 100.000(€).
+     * Example 2 catches Java Exception and transforms it into a BPMN Error.
+     * The error is modelled with a BPMN Boundary Error Event.
      */
     @Test
     public void testExceptionHandlingExample2() {
@@ -47,19 +48,8 @@ public class ExceptionHandlingTest {
                 .correlateStartMessage();
 
         assertThat(processInstance)
-                .hasVariables("loanAmount")
-                .hasPassed("CalculateLoanTask", "ServiceErrorEndEvent")
-                .isEnded();
-    }
-
-    @Test
-    public void testExceptionHandlingExample3() {
-        ProcessInstance processInstance = runtimeService
-                .createMessageCorrelation("ExceptionHandling3StartMessage")
-                .correlateStartMessage();
-
-        assertThat(processInstance)
                 .hasPassed("ExceptionTask", "ErrorBoundaryEvent", "HandleBPMNErrorTask", "ErrorEndEvent")
                 .isEnded();
     }
+
 }
