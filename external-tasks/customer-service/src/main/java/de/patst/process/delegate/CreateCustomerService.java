@@ -50,11 +50,12 @@ public class CreateCustomerService {
                     }
                 }))
                 .processDefinitionKey("ExternalTaskProcess")
-                //.variables(); Specific variables can be prefetched.
+                .variables("customer") //; Specific variables can be prefetched.
                 .open();
     }
 
-    private synchronized void handleTask(ExternalTask externalTask, ExternalTaskService externalTaskService) throws Exception {
+    private synchronized void handleTask(ExternalTask externalTask,
+                                         ExternalTaskService externalTaskService) throws Exception {
         // Random sleep time to simulate execution time
         this.wait(new Random().nextInt(10000));
 
@@ -66,7 +67,8 @@ public class CreateCustomerService {
             LOGGER.info("customer created : " + customer.toString());
             // here we could persist the customer into a database or whatever
             // as result we set a customer id
-            externalTaskService.complete(externalTask, Collections.singletonMap("customerId", UUID.randomUUID().toString()));
+            externalTaskService.complete(externalTask,
+                    Collections.singletonMap("customerId", UUID.randomUUID().toString()));
         }
 
 

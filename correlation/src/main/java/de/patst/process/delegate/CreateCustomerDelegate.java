@@ -25,7 +25,8 @@ public class CreateCustomerDelegate implements JavaDelegate {
         uriVariables.put("processInstanceId", execution.getProcessInstanceId());
         uriVariables.put("respondTo", "http://localhost:" + PORT + "/customer");
 
-        restTemplate.put("http://localhost:" + PORT + "/remote/api/customer?processInstanceId={processInstanceId}&respondTo={respondTo}",
+        restTemplate.put("http://localhost:" + PORT + "/remote/api/customer" +
+                        "?processInstanceId={processInstanceId}&respondTo={respondTo}",
                 execution.getVariable("name"),
                 uriVariables);
         LOGGER.info("Request sent");
