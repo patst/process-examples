@@ -22,6 +22,7 @@
         <module>transactions</module>
         <module>exception-handling</module>
         <module>user-tasks</module>
+        <module>external-tasks</module>
     </modules>
 
     <groupId>de.patst.process</groupId>
