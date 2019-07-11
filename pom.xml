@@ -23,6 +23,7 @@
         <module>exception-handling</module>
         <module>user-tasks</module>
         <module>external-tasks</module>
+        <module>correlation</module>
     </modules>
 
     <groupId>de.patst.process</groupId>
