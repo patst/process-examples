@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1921v2t" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.2.4">
+  <bpmn:process id="EmbeddedTaskFormProcess" name="Embedded Task Form" isExecutable="true">
+    <bpmn:startEvent id="EmbeddedTaskFormStartEvent" name="EmbeddedTaskFormStartMessage">
+      <bpmn:outgoing>SequenceFlow_059wexv</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_1ro77sw" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_059wexv" sourceRef="EmbeddedTaskFormStartEvent" targetRef="EnterPersonalDataTask" />
+    <bpmn:userTask id="EnterPersonalDataTask" name="Enter personal data" camunda:formKey="embedded:app:forms/personal-data-form.html" camunda:assignee="admin">
+      <bpmn:incoming>SequenceFlow_059wexv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0xnrpiv</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0xnrpiv" sourceRef="EnterPersonalDataTask" targetRef="IntermediateThrowEvent_1glg5d9" />
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1glg5d9" name="Complete after 10 minutes">
+      <bpmn:incoming>SequenceFlow_0xnrpiv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0yzg45w</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT10M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="EndEvent_18j3ewh">
+      <bpmn:incoming>SequenceFlow_0yzg45w</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0yzg45w" sourceRef="IntermediateThrowEvent_1glg5d9" targetRef="EndEvent_18j3ewh" />
+  </bpmn:process>
+  <bpmn:message id="Message_1ro77sw" name="EmbeddedTaskFormStartMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EmbeddedTaskFormProcess">
+      <bpmndi:BPMNShape id="StartEvent_0geuizd_di" bpmnElement="EmbeddedTaskFormStartEvent">
+        <dc:Bounds x="166" y="176" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="140" y="219" width="89" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_059wexv_di" bpmnElement="SequenceFlow_059wexv">
+        <di:waypoint x="202" y="194" />
+        <di:waypoint x="268" y="194" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_068b22b_di" bpmnElement="EnterPersonalDataTask">
+        <dc:Bounds x="268" y="154" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0xnrpiv_di" bpmnElement="SequenceFlow_0xnrpiv">
+        <di:waypoint x="368" y="194" />
+        <di:waypoint x="409" y="194" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_0kp6gdb_di" bpmnElement="IntermediateThrowEvent_1glg5d9">
+        <dc:Bounds x="409" y="176" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="383" y="219" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_18j3ewh_di" bpmnElement="EndEvent_18j3ewh">
+        <dc:Bounds x="492" y="176" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0yzg45w_di" bpmnElement="SequenceFlow_0yzg45w">
+        <di:waypoint x="445" y="194" />
+        <di:waypoint x="492" y="194" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -21,6 +21,7 @@
         <module>listener</module>
         <module>transactions</module>
         <module>exception-handling</module>
+        <module>user-tasks</module>
     </modules>
 
     <groupId>de.patst.process</groupId>
