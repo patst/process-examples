@@ -10,6 +10,10 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0oqxgo8" sourceRef="StartEvent" targetRef="LogVariablesTask" />
     <bpmn:serviceTask id="LogVariablesTask" name="Log variables with expression" camunda:delegateExpression="${logDelegate}">
+      <bpmn:documentation>This is documentation for a Logging task.
+
+It has multiple lines
+</bpmn:documentation>
       <bpmn:incoming>SequenceFlow_0oqxgo8</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1gkh1pv</bpmn:outgoing>
     </bpmn:serviceTask>
