@@ -20,7 +20,6 @@ public class LogDelegate implements JavaDelegate {
         LOGGER.info("Process Variables:");
         execution.getVariables()
                 .forEach((key, value) -> LOGGER.info("Variable Name: " + key + "; value=" + value));
-        LOGGER.info("--- End Logging in LogDelegate bean:---");
         String documentation = execution.
                 getBpmnModelElementInstance().
                 getDocumentations()
@@ -28,5 +27,6 @@ public class LogDelegate implements JavaDelegate {
                 .map(Documentation::getTextContent)
                 .collect(Collectors.joining());
         LOGGER.info("Documentation: " + documentation);
+        LOGGER.info("--- End Logging in LogDelegate bean:---");
     }
 }
