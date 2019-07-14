@@ -24,6 +24,7 @@
         <module>user-tasks</module>
         <module>external-tasks</module>
         <module>correlation</module>
+        <module>model-api</module>
     </modules>
 
     <groupId>de.patst.process</groupId>

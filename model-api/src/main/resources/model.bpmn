@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1k749q3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.1">
+  <bpmn:process id="DelegateProcess" name="Delegate Process" isExecutable="true">
+    <bpmn:startEvent id="StartEvent" name="ModelAPIStartMessage">
+      <bpmn:outgoing>SequenceFlow_0oqxgo8</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_04jatho" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent">
+      <bpmn:incoming>SequenceFlow_0d9cirw</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0oqxgo8" sourceRef="StartEvent" targetRef="LogVariablesTask" />
+    <bpmn:serviceTask id="LogVariablesTask" name="Log variables with expression" camunda:delegateExpression="${logDelegate}">
+      <bpmn:incoming>SequenceFlow_0oqxgo8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1gkh1pv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1gkh1pv" sourceRef="LogVariablesTask" targetRef="ClassNameLogTask" />
+    <bpmn:serviceTask id="ClassNameLogTask" name="Log with classname" camunda:class="de.patst.process.delegate.LogDelegate">
+      <bpmn:incoming>SequenceFlow_1gkh1pv</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1tktfhe</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1tktfhe" sourceRef="ClassNameLogTask" targetRef="SetVariableExpressionTask" />
+    <bpmn:serviceTask id="SetVariableExpressionTask" name="Set variable with expression" camunda:expression="${execution.setVariable(&#39;test&#39;, &#39;foo&#39;)}">
+      <bpmn:incoming>SequenceFlow_1tktfhe</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0d9cirw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0d9cirw" sourceRef="SetVariableExpressionTask" targetRef="EndEvent" />
+  </bpmn:process>
+  <bpmn:message id="Message_04jatho" name="ModelAPIStartMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DelegateProcess">
+      <bpmndi:BPMNShape id="StartEvent_0inf0q3_di" bpmnElement="StartEvent">
+        <dc:Bounds x="212" y="103" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="191" y="146" width="87" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1gnjn0h_di" bpmnElement="EndEvent">
+        <dc:Bounds x="768" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0oqxgo8_di" bpmnElement="SequenceFlow_0oqxgo8">
+        <di:waypoint x="248" y="121" />
+        <di:waypoint x="311" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1k9se9o_di" bpmnElement="LogVariablesTask">
+        <dc:Bounds x="311" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gkh1pv_di" bpmnElement="SequenceFlow_1gkh1pv">
+        <di:waypoint x="411" y="121" />
+        <di:waypoint x="472" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0jngja2_di" bpmnElement="ClassNameLogTask">
+        <dc:Bounds x="472" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1tktfhe_di" bpmnElement="SequenceFlow_1tktfhe">
+        <di:waypoint x="572" y="121" />
+        <di:waypoint x="627" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1ahd2qm_di" bpmnElement="SetVariableExpressionTask">
+        <dc:Bounds x="627" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0d9cirw_di" bpmnElement="SequenceFlow_0d9cirw">
+        <di:waypoint x="727" y="121" />
+        <di:waypoint x="768" y="121" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
