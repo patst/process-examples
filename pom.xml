@@ -25,6 +25,7 @@
         <module>external-tasks</module>
         <module>correlation</module>
         <module>model-api</module>
+        <module>cockpit-plugin</module>
     </modules>
 
     <groupId>de.patst.process</groupId>
