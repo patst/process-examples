@@ -4,9 +4,9 @@ Show how the different delegate styles work.
 
 Delegate styles:
 
-* Java Class (Full qualified classname)
-* Expression to do something directly
-* Delegate Expression to point to a Java Delegate implementation
+* Java Class (Full qualified classname), e.g `de.fhdw.process.MyDelegate`
+* Expression to do something directly, e.g. `${execution.setVariable('test', 'foo')}`
+* Delegate Expression to point to a Java Delegate implementation, e.g. `${myDelegate}`
 * External task for tasks which will be fulfilled by some external task implementation
 
 
