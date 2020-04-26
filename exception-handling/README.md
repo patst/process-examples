@@ -1,4 +1,6 @@
 # Exception handling
 
-Shows different methods how to handle exceptions.
+Shows different methods how to handle different exception types in processes.
+
+
 
