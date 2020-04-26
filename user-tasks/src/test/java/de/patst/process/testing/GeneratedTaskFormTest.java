@@ -33,15 +33,15 @@ public class GeneratedTaskFormTest {
 
 
     @Test
-    public void testGeneratedAssignedUserTask() throws Exception {
+    public void testGeneratedAssignedUserTask() {
         ProcessInstance processInstance = runtimeService
-                .startProcessInstanceByMessage("GeneratedTaskFormAssignedStartMessage");
+            .startProcessInstanceByMessage("GeneratedTaskFormAssignedStartMessage");
         assertThat(processInstance).isWaitingAt("EnterPersonalDataAssignedTask");
 
         Task task = taskService.createTaskQuery()
-                .processInstanceId(processInstance.getId())
-                .taskAssignee("admin")
-                .singleResult();
+            .processInstanceId(processInstance.getId())
+            .taskAssignee("admin")
+            .singleResult();
         Map<String, Object> variables = new HashMap<>();
         // Firstname is required but the validation rules only work using the tasklist ui
         // variables.put("firstname", "Max");
