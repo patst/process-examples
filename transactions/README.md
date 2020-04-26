@@ -1,6 +1,6 @@
 ## Transactions
 
-Its important to understand the transaction behavior in order to model the processes correct.
+It is important to understand the transaction behavior in order to model the processes correct.
 
 The process instance is executed with the thread which started the process instance until it reaches a *wait state*.
 
@@ -16,3 +16,10 @@ Examples for wait states are:
 
 Exceptions will cause the process instance to be rolled back to the last wait state. 
 If there was no wait state the process instance will completely vanish from the process engines history.
+
+## Run the example
+
+Sstart the application with `mvn spring-boot:run` or launch the main application class).
+
+
+
