@@ -1,6 +1,10 @@
 package de.patst.process.delegate;
 
 
+import java.util.Collections;
+import java.util.Random;
+import java.util.UUID;
+import javax.annotation.PostConstruct;
 import org.camunda.bpm.client.ExternalTaskClient;
 import org.camunda.bpm.client.task.ExternalTask;
 import org.camunda.bpm.client.task.ExternalTaskService;
@@ -8,11 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.Random;
-import java.util.UUID;
 
 @Component
 public class CreateCustomerService {
@@ -41,12 +40,12 @@ public class CreateCustomerService {
                 .subscribe("createCustomer")
                 .lockDuration(10000) // lock tasks for 10 seconds
                 .handler(((externalTask, externalTaskService) -> {
-                    LOGGER.info("Task received: " + externalTask.getId());
+                    LOGGER.info("Task received: {}", externalTask.getId());
                     try {
                         handleTask(externalTask, externalTaskService);
-                        LOGGER.info("Task handled: " + externalTask.getId());
+                        LOGGER.info("Task handled: {}", externalTask.getId());
                     } catch (Exception e) {
-                        LOGGER.info("Task handled with exception " + e.getMessage() + ": " + externalTask.getId());
+                        LOGGER.info("Task handled with exception {} : {}", e.getMessage(), externalTask.getId());
                     }
                 }))
                 .processDefinitionKey("ExternalTaskProcess")

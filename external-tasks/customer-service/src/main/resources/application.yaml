@@ -2,5 +2,7 @@ app:
   engine:
     api: "http://localhost:8080/rest"
 
-server:
-  port: 9090
+# the application does not need to expose a web server
+spring:
+  main:
+    web-application-type: none
