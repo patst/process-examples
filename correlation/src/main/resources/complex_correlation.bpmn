@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_1fryb1q" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+  <bpmn:process id="ComplexCorrelation" name="Complex Correlation" isExecutable="true">
+    <bpmn:documentation>Correlation example in which the process instance id is not enough</bpmn:documentation>
+    <bpmn:startEvent id="StartComplexCorrelationExample" name="ComplexCorrelationExampleStartMessage">
+      <bpmn:outgoing>Flow_0m6ddfy</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1qsz5kb" messageRef="Message_10c0sct"/>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="Activity_002vuy7">
+      <bpmn:incoming>Flow_0m6ddfy</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ld7t9s</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="deliveryServices" camunda:elementVariable="deliveryService"/>
+      <bpmn:startEvent id="SubProcessStartEvent" name="SubProcessStartEvent">
+        <bpmn:outgoing>Flow_0cygjj0</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0cygjj0" sourceRef="SubProcessStartEvent" targetRef="AskForDeliveryPriceActivity"/>
+      <bpmn:sequenceFlow id="Flow_03bw300" sourceRef="AskForDeliveryPriceActivity" targetRef="DeliveryServicePriceReceivedEvent"/>
+      <bpmn:serviceTask id="AskForDeliveryPriceActivity" name="Ask Delivery service for price" camunda:delegateExpression="${askForDeliveryPrice}">
+        <bpmn:incoming>Flow_0cygjj0</bpmn:incoming>
+        <bpmn:outgoing>Flow_03bw300</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="Event_1d6bimb">
+        <bpmn:incoming>Flow_06ifegj</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_06ifegj" sourceRef="DeliveryServicePriceReceivedEvent" targetRef="Event_1d6bimb"/>
+      <bpmn:intermediateCatchEvent id="DeliveryServicePriceReceivedEvent" name="Delivery Service Price received">
+        <bpmn:extensionElements>
+          <camunda:executionListener delegateExpression="${DeliveryPriceReceived}" event="end"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_03bw300</bpmn:incoming>
+        <bpmn:outgoing>Flow_06ifegj</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="MessageEventDefinition_0ly61c4" messageRef="Message_1vx4wim" camunda:delegateExpression="${deliveryPriceReceived}"/>
+      </bpmn:intermediateCatchEvent>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_0m6ddfy" sourceRef="StartComplexCorrelationExample" targetRef="Activity_002vuy7"/>
+    <bpmn:endEvent id="ComplexCorrelationEndEvent" name="Complex correlation end event">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${endEventListener}" event="start"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ld7t9s</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ld7t9s" sourceRef="Activity_002vuy7" targetRef="ComplexCorrelationEndEvent"/>
+  </bpmn:process>
+  <bpmn:message id="Message_10c0sct" name="ComplexCorrelationExampleStartMessage"/>
+  <bpmn:message id="Message_1vx4wim" name="DeliveryServicePriceReceivedMessage"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ComplexCorrelation">
+      <bpmndi:BPMNEdge id="Flow_0m6ddfy_di" bpmnElement="Flow_0m6ddfy">
+        <di:waypoint x="248" y="177"/>
+        <di:waypoint x="330" y="177"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ld7t9s_di" bpmnElement="Flow_1ld7t9s">
+        <di:waypoint x="750" y="177"/>
+        <di:waypoint x="822" y="177"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0mn23qa_di" bpmnElement="ComplexCorrelationEndEvent">
+        <dc:Bounds x="822" y="159" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="804" y="202" width="73" height="40"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1dv4b9r_di" bpmnElement="StartComplexCorrelationExample">
+        <dc:Bounds x="212" y="159" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="189" y="202" width="83" height="40"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1sc7q7m_di" bpmnElement="Activity_002vuy7" isExpanded="true">
+        <dc:Bounds x="330" y="72" width="420" height="210"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0cygjj0_di" bpmnElement="Flow_0cygjj0">
+        <di:waypoint x="408" y="180"/>
+        <di:waypoint x="450" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03bw300_di" bpmnElement="Flow_03bw300">
+        <di:waypoint x="550" y="180"/>
+        <di:waypoint x="602" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06ifegj_di" bpmnElement="Flow_06ifegj">
+        <di:waypoint x="638" y="180"/>
+        <di:waypoint x="682" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_00dx2ci_di" bpmnElement="SubProcessStartEvent">
+        <dc:Bounds x="372" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="349" y="205" width="83" height="27"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_027b3o9_di" bpmnElement="AskForDeliveryPriceActivity">
+        <dc:Bounds x="450" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1d6bimb_di" bpmnElement="Event_1d6bimb">
+        <dc:Bounds x="682" y="162" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0h78mqz_di" bpmnElement="DeliveryServicePriceReceivedEvent">
+        <dc:Bounds x="602" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="581" y="205" width="80" height="27"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

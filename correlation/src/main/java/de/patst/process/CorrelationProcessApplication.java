@@ -6,10 +6,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableScheduling
 @SpringBootApplication
-public class ProcessApplication {
+public class CorrelationProcessApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(ProcessApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(CorrelationProcessApplication.class, args);
+  }
 
 }
